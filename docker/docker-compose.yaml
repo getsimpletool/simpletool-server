@@ -2,11 +2,11 @@ services:
   simpletoolserver:
     hostname: simpletoolserver
     container_name: simpletoolserver
-    #image: ghcr.io/getsimpletool/simpletool-server:latest
+    image: ghcr.io/getsimpletool/simpletool-server:v0.1.0
     shm_size: '2gb'
-    build:
-      context: ..
-      dockerfile: ./docker/Dockerfile
+    #build:
+    #  context: ..
+    #  dockerfile: ./docker/Dockerfile
     ports:
       - 2222:22       # SSH port
       - 8000:8000     # HTTP SimpleTool MCP port
@@ -35,7 +35,7 @@ services:
       - VNC_ENABLED=true # Enable VNC. Default: true
       # --- System-level ENV (optional, not used by server code) ---
       - PUID=1000
-      - PGID=100
+      - PGID=1000
       - TZ=CET
     volumes:
       - data:/app/server/data

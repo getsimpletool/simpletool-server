@@ -139,7 +139,8 @@ USER appuser
 ADD --chown=$USER:$GID ./docker/src/home/ $HOME/
 ADD ./docker/src/startup/ $STARTUPDIR
 ENV PATH="/home/appuser/.local/bin:${PATH}"
-RUN mkdir -p /app/server \
+RUN mkdir -p /app/server \ 
+    && chmod +x $HOME/wm_startup.sh \
     && chown -R $USER /app/server \
     && touch $HOME/.bashrc 
 

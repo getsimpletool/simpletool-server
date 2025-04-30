@@ -2,7 +2,7 @@ services:
   simpletoolserver:
     hostname: simpletoolserver
     container_name: simpletoolserver
-    image: ghcr.io/getsimpletool/simpletool-server:v0.1.0
+    image: ghcr.io/getsimpletool/simpletool-server:latest
     shm_size: '2gb'
     #build:
     #  context: ..

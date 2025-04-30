@@ -1,0 +1,58 @@
+# Environment variables
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE / Editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data files (if they shouldn't be committed)
+# data/config/config.json # Keep config tracked for now, maybe ignore later?
+data/logs/*
+!data/logs/.gitkeep
+data/backups/*
+!data/backups/.gitkeep
+data/user/*
+!data/user/.gitkeep
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+
+# Block
+docs/
+data/
+venv/
+docker/data/
+specification/
+.windsurfrules
+kill.sh
+.pytest_cache/
+.vscode/
+
+
+# Tests
+test/server-stress-tests/
+test/mcpServer-compatibility/
+
+
+# Src
+src/webui/

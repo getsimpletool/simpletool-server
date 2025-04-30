@@ -35,7 +35,7 @@ services:
       - VNC_ENABLED=true # Enable VNC. Default: true
       # --- System-level ENV (optional, not used by server code) ---
       - PUID=1000
-      - PGID=1000
+      - PGID=100
       - TZ=CET
     volumes:
       - data:/app/server/data

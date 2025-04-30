@@ -4,7 +4,7 @@ import signal
 import sys
 from typing import Any
 from server.logger import logger
-from config import CONFIG_MAIN_FILE_PATH
+from config import CONFIG_MAIN_FILE_PATH, APP_VERSION, APP_NAME
 import routers.prompts as prompts_module
 import routers.admin as admin_module
 import routers.mcp_sse as mcp_sse_module
@@ -23,9 +23,9 @@ from services.mcpserver import McpServerService
 load_dotenv()
 
 fastapi = FastAPI(
-    title="SimpleToolServer",
+    title=APP_NAME,
     description="A simple FastAPI server template",
-    version="0.1.0"
+    version=str(APP_VERSION)
 )
 
 # Setup middleware
@@ -66,10 +66,10 @@ fastapi.openapi = custom_openapi
 
 @fastapi.get("/", include_in_schema=False, response_class=responses.HTMLResponse)
 async def root():
-    return """
+    return f"""
     <html>
         <body>
-            <h3>Welcome to the SimpleToolServer API</h3>
+            <h3>Welcome to the {APP_NAME} API</h3>
             <p>Check <a href="/docs">docs</a> or <a href="/redoc">redoc</a> for API documentation</p>
             <p>Check <a href="/tools/openapi.json">tools</a> for tools documentation</p>
         </body>

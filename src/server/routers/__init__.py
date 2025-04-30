@@ -1,5 +1,5 @@
 """
-Router package for the SimpleTool server.
+Router package.
 
 This package contains all the FastAPI routers for the server.
 """

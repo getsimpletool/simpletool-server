@@ -1,5 +1,5 @@
 """
-Authentication package for the SimpleTool server.
+Authentication package.
 
 This package contains authentication-related modules, models, and utilities.
 """

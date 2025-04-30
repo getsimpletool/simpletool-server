@@ -8,7 +8,7 @@ import json
 from typing import Dict, Any
 from datetime import datetime
 from loguru import logger
-
+from config import APP_VERSION, APP_NAME
 from services.sse_transport import SseTransport
 from .utils import send_sse_response
 
@@ -61,8 +61,8 @@ async def handle_initialize(
         "result": {
             "protocolVersion": "2024-11-05",
             "serverInfo": {
-                "name": "simpletool-server",
-                "version": "0.1.0"
+                "name": APP_NAME,
+                "version": str(APP_VERSION)
             },
             "capabilities": {
                 "tools": {
@@ -81,9 +81,9 @@ async def handle_initialize(
     # Also send the response through the SSE connection to ensure the client receives it
     # This is a workaround for clients that might not properly handle the HTTP response
     await send_sse_response(
-        sse_transport, 
-        session_id, 
-        response, 
+        sse_transport,
+        session_id,
+        response,
         "initialize"
     )
 

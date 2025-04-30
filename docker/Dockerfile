@@ -78,6 +78,7 @@ RUN useradd -m -s /bin/bash -N -u $UID -g $GID $USER \
     && chown -R $USER:$GID $HOME/.npm \
     && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
     && locale-gen \
+    && sed -i 's/^logfile=/user=root\nlogfile=/' /etc/supervisor/supervisord.conf \
     && sed -i 's/^chmod=0700/chmod=0777/' /etc/supervisor/supervisord.conf \
     && sed -i 's/run\//run\/supervisor\//g' /etc/supervisor/supervisord.conf  \
     && mkdir -p /var/log/supervisor/ \
@@ -153,6 +154,6 @@ RUN rm -rf /app/server/data/config && \
 
 # Use supervisord to manage both VNC and Uvicorn
 COPY ./docker/src/supervisor/conf.d/* /etc/supervisor/conf.d/
-ENTRYPOINT ["/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["sudo", "-E", "/usr/bin/supervisord", "--nodaemon", "-c", "/etc/supervisor/supervisord.conf"]
 
 EXPOSE $VNC_PORT $NO_VNC_PORT

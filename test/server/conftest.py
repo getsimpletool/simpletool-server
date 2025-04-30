@@ -40,6 +40,7 @@ def server_url(request):
         # remove also .env file
         (DST / '.env').unlink(missing_ok=True)
         # start uvicorn
+        os.environ['PYTHONPATH'] = f"{os.environ.get('PYTHONPATH', '')}:/tmp"
         proc = subprocess.Popen([
             sys.executable, '-m', 'uvicorn', 'main:fastapi',
             '--host', '0.0.0.0', '--port', '9999'
@@ -51,6 +52,7 @@ def server_url(request):
                 if r.status_code == 200:
                     break
             except Exception:
+                # print(f"Response: {r.status_code}")
                 time.sleep(1)
         else:
             proc.terminate()
@@ -58,7 +60,7 @@ def server_url(request):
         yield CLEAN_URL
         # teardown
         proc.terminate()
-        proc.wait(timeout=5)
+        proc.wait(timeout=10)
         shutil.rmtree(DST, ignore_errors=True)
     else:
         yield os.getenv('MCP_SERVER_URL', 'http://localhost:8000')

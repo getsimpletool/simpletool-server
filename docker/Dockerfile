@@ -11,18 +11,19 @@ ARG GID=100
 USER root
 ### Envrionment config
 ENV DISPLAY=:1 \
+    VNC_ENABLED=true \
     VNC_PORT=5901 \
-    NO_VNC_PORT=6901 \
-    USER=${USER} \
-    HOME=/home/${USER} \
-    TERM=xterm \
-    STARTUPDIR=/dockerstartup \
-    NO_VNC_HOME=/opt/noVNC \
-    DEBIAN_FRONTEND=noninteractive \
     VNC_COL_DEPTH=24 \
     VNC_RESOLUTION=1280x1024 \
     VNC_PW=vncpassword \
     VNC_VIEW_ONLY=false \
+    NO_VNC_PORT=6901 \
+    NO_VNC_HOME=/opt/noVNC \
+    USER=${USER} \
+    HOME=/home/${USER} \
+    TERM=xterm \
+    STARTUPDIR=/dockerstartup \
+    DEBIAN_FRONTEND=noninteractive \
     APP_FOLDER=/app \
     NODE_VERSION=v23.6.0 \  
     SSHD_ENABLED=true \
@@ -132,8 +133,6 @@ RUN /bin/bash -c "source $HOME/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm u
 ### Install python uvx
 RUN PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install uvx && \
     pip3 install setuptools
-
-
 
 # Switch to user
 USER appuser

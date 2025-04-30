@@ -20,9 +20,6 @@ if [ "$SSHD_ENABLED" = true ]; then
     mkdir -p /run/sshd
     /usr/sbin/sshd -D -d -p $SSHD_PORT
 elif [ "$SSHD_ENABLED" = false ] || [ "$SSHD_ENABLED" = False ]; then
-    echo "SSHD is disabled. Emulating running container with sleep..."
-    sleep infinity
+    echo "SSHD is disabled. Skipping SSHD startup."
+    exit 0
 fi
-
-# Wait for the process to exit
-wait

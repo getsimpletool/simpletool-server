@@ -9,6 +9,7 @@ if [ -f "$(dirname "$0")/.env" ]; then
   set +a
 fi
 
+
 ## print out help
 help (){
 echo "
@@ -27,6 +28,15 @@ OPTIONS:
 }
 if [[ $1 =~ -h|--help ]]; then
     help
+    exit 0
+fi
+
+
+# Check if env VNC_ENABLED is true
+if [ "$VNC_ENABLED" = true ]; then
+    echo "VNC_ENABLED: $VNC_ENABLED"
+else
+    echo "VNC is disabled. Skipping VNC startup."
     exit 0
 fi
 

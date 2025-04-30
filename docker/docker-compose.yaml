@@ -8,8 +8,10 @@ services:
       context: ..
       dockerfile: ./docker/Dockerfile
     ports:
-      - 8000:8000
-      - 6901:6901
+      - 2222:22       # SSH port
+      - 8000:8000     # HTTP SimpleTool MCP port
+      - 5901:5901     # VNC port
+      - 6901:6901     # HTTP noVNC port
     # Set limit CPU core = 2
     cpus: '2'
     # Set limit memory = 3GB
@@ -33,7 +35,7 @@ services:
       - VNC_ENABLED=true # Enable VNC. Default: true
       # --- System-level ENV (optional, not used by server code) ---
       - PUID=1000
-      - PGID=1000
+      - PGID=100
       - TZ=CET
     volumes:
       - data:/app/server/data

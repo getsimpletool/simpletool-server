@@ -9,28 +9,9 @@ if [ -f "$(dirname "$0")/.env" ]; then
   set +a
 fi
 
-
-## print out help
-help (){
-echo "
-USAGE:
-docker run -it -p 6901:6901 -p 5901:5901 <image>:<tag> <option>
-
-OPTIONS:
--w, --wait      (default) keeps the UI and the vncserver up until SIGINT or SIGTERM will received
--s, --skip      skip the vnc startup and just execute the assigned command.
-                example: docker run <image>:<tag> --skip bash
--d, --debug     enables more detailed startup output
-                e.g. 'docker run <image>:<tag> --debug bash'
--h, --help      print out this help
-
-"
-}
-if [[ $1 =~ -h|--help ]]; then
-    help
-    exit 0
-fi
-
+# Start VNC only when env VNC_ENABLED is set to true
+echo "VNC_ENABLED: $VNC_ENABLED"
+echo "VNC_PORT: $VNC_PORT"
 
 # Check if env VNC_ENABLED is true
 if [ "$VNC_ENABLED" = true ]; then
@@ -40,21 +21,9 @@ else
     exit 0
 fi
 
-# should also source $STARTUPDIR/generate_container_user
+# should also source user bashrc
 echo "source $HOME/.bashrc"
 source $HOME/.bashrc
-
-# add `--skip` to startup args, to skip the VNC startup procedure
-if [[ $1 =~ -s|--skip ]]; then
-    echo -e "\n\n------------------ SKIP VNC STARTUP -----------------"
-    echo -e "\n\n------------------ EXECUTE COMMAND ------------------"
-    echo "Executing command: '${@:2}'"
-    exec "${@:2}"
-fi
-if [[ $1 =~ -d|--debug ]]; then
-    echo -e "\n\n------------------ DEBUG VNC STARTUP -----------------"
-    export DEBUG=true
-fi
 
 ## correct forwarding of shutdown signal
 cleanup () {
@@ -69,8 +38,7 @@ VNC_RES_H=${VNC_RESOLUTION#*x}
 
 echo -e "\n------------------ update chromium-browser.init ------------------"
 echo -e "\n... set window size $VNC_RES_W x $VNC_RES_H as chrome window size!\n"
-
-echo "export CHROMIUM_FLAGS='--no-sandbox --test-type --start-maximized --disable-gpu --disable-dev-shm-usage  --user-data-dir --window-size=$VNC_RES_W,$VNC_RES_H --window-position=0,0'" > $HOME/.chromium-browser.init
+echo "export CHROMIUM_FLAGS='--no-sandbox --test-type --start-maximized --disable-gpu --disable-dev-shm-usage --user-data-dir --window-size=$VNC_RES_W,$VNC_RES_H --window-position=0,0'" > $HOME/.chromium-browser.init
 source $HOME/.chromium-browser.init
 
 ## resolve_vnc_connection

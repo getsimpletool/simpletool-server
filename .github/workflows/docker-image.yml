@@ -1,12 +1,21 @@
 name: Build Docker Image
 
 on:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ["Run server tests with pytest"]
+    types:
+      - completed
   workflow_dispatch:
+    inputs:
+      push_to_registry:
+        description: 'Push image to GHCR'
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   build:
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -32,7 +41,7 @@ jobs:
         with:
           file: ./docker/Dockerfile
           context: .
-          push: true
+          push: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.push_to_registry == 'true' || github.event_name == 'workflow_run' }}
           tags: |
             ghcr.io/${{ github.repository_owner }}/simpletool-server:latest
             ghcr.io/${{ github.repository_owner }}/simpletool-server:${{ github.ref_name }}

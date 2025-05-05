@@ -133,7 +133,7 @@ async def periodic_idle_server_cleanup():
     Periodically clean up idle private server instances.
     Runs every 5 minutes by default.
     """
-    cleanup_interval = int(os.getenv("PRIVATE_SERVER_CLEANUP_INTERVAL", "300"))  # Default: 5 minutes
+    cleanup_interval = int(os.getenv("PRIVATE_MCPSERVER_CLEANUP_INTERVAL", "300"))  # Default: 5 minutes
     logger.info(f"Starting periodic cleanup of idle private servers (interval: {cleanup_interval} seconds)")
 
     while True:

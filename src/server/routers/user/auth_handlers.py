@@ -58,7 +58,7 @@ async def login_for_access_token(form_data: LoginRequest = Body(...)):
         )
 
     # Create access token
-    access_token_expires = timedelta(minutes=security.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=security.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = security.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )

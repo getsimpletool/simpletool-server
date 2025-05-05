@@ -42,12 +42,19 @@ docs/
 data/
 venv/
 docker/data/
+docker_dev/
 specification/
 .windsurfrules
 kill.sh
 .pytest_cache/
 .vscode/
-
+.input
+*.original
+*.old
+*.backup
+*.backups
+.*/                 # ignore all dot-directories
+!.github/           # but do NOT ignore .github directory
 
 # Tests
 test/server-stress-tests/

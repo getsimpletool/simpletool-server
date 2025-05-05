@@ -17,26 +17,11 @@ services:
     # Set limit memory = 3GB
     mem_limit: '3g'
     environment:
-      # --- Core ENV used by the server ---
-      - ADMIN_DEFAULT_PASSWORD=admin # Admin password for first user. Default: admin
-      - ADMIN_BEARER_HACK=abc123 # Static Bearer token for admin. Default: unset (empty)
-      - SALT=default_insecure_pepper # Used for password hashing. Default: default_insecure_pepper
-      - JWT_SECRET_KEY=default_insecure_secret_key # JWT secret. Default: default_insecure_secret_key
-      - JWT_ALGORITHM=HS256 # JWT algorithm. Default: HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30 # JWT access token expiry (minutes). Default: 30
-      - CONFIG_STORAGE_TYPE=files # Config storage type. Default: files
-      #- TOOL_CONFIG_PATH=/app/server/data/config/config.json # Tool config path. Default: $APP_FOLDER/data/config/config.json
-      #- CONFIG_STORAGE_PATH=/app/server/data/config # Path to config storage. Default: $APP_FOLDER/data/config
-      - PRIVATE_SERVER_CLEANUP_INTERVAL=300 # Idle private server cleanup interval (seconds). Default: 300
-      - TOOLS_WHITELIST= # Comma-separated list of tools to whitelist. Default: unset (empty)
-      - TOOLS_BLACKLIST= # Comma-separated list of tools to blacklist. Default: unset (empty)
-      - SUBPROCESS_STREAM_LIMIT=5242880 # Subprocess stream limit in bytes (default: 5MB)
-      - SSH_ENABLED=true # Enable SSH. Default: true
-      - VNC_ENABLED=true # Enable VNC. Default: true
-      # --- System-level ENV (optional, not used by server code) ---
       - PUID=1000
       - PGID=100
       - TZ=CET
+    env_file:
+      - simpletoolserver.env
     volumes:
       - data:/app/server/data
     restart: unless-stopped
@@ -45,11 +30,11 @@ networks:
   default:
     name: simpletool
 
-
+# Create volume for data
 volumes:
   data:
-    name: simpletool-server-data    
+    name: simpletool-server-data
     driver_opts:
       type: none
       o: bind
-      device: ${PWD}/data
+      device: ${PWD}/data/

@@ -8,7 +8,7 @@ import pathlib
 
 # Define application paths
 APP_PATH = pathlib.Path(os.getcwd())
-APP_VERSION = "0.1.0"
+APP_VERSION = "0.1.1"
 APP_NAME = "SimpleToolServer"
 CONFIG_STORAGE_TYPE = os.getenv("CONFIG_STORAGE_TYPE", "files")
 CONFIG_STORAGE_PATH = os.getenv("CONFIG_STORAGE_PATH", str(APP_PATH / "data" / "config"))

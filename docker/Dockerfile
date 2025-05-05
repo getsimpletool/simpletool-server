@@ -73,7 +73,7 @@ RUN useradd -m -s /bin/bash -N -u $UID -g $GID $USER \
     && echo "${USER}:${USER}" | chpasswd \
     && mkdir -p $APP_FOLDER \
     && mkdir -p $STARTUPDIR \
-    && chown -R appuser $APP_FOLDER \
+    && chown -R $USER:$GID $APP_FOLDER \
     && chown -R appuser $STARTUPDIR \
     && mkdir -p $HOME/.npm \
     && chown -R $USER:$GID $HOME/.npm \
@@ -127,8 +127,8 @@ RUN for f in /usr/lib/python3*/EXTERNALLY-MANAGED; do \
     done
 
 ### Install nvm
-RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-RUN /bin/bash -c "source $HOME/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
+RUN wget -qO- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash && \
+    /bin/bash -c "source $HOME/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
 
 ### Install python uvx
 RUN PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install uvx && \
@@ -139,17 +139,16 @@ USER appuser
 ADD --chown=$USER:$GID ./docker/src/home/ $HOME/
 ADD ./docker/src/startup/ $STARTUPDIR
 ENV PATH="/home/appuser/.local/bin:${PATH}"
-RUN mkdir -p /app/server \ 
+RUN mkdir -p /app/server \
     && chmod +x $HOME/wm_startup.sh \
-    && chown -R $USER /app/server \
     && touch $HOME/.bashrc 
 
 WORKDIR /home/appuser
 
 ### Install SimpleServer
-ADD ./src/server /app/server/
-RUN rm -rf /app/server/data/config && \
-    rm -rf /app/server/.env \
+ADD --chown=$USER:$GID ./src/server /app/server/
+RUN rm -rf /app/server/data/config \
+    && rm -rf /app/server/.env \
     && sudo pip3 install -r /app/server/requirements.txt
 
 # Use supervisord to manage both VNC and Uvicorn

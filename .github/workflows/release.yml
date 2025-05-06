@@ -32,5 +32,5 @@ jobs:
     uses: ./.github/workflows/reusable-build-docker.yml
     with:
       release_tag: ${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}
-      release_tag_latest: ${{ github.event_name == 'release' && true || github.event.inputs.release_tag_latest }}
-      push_image: ${{ github.event_name == 'release' && true || github.event.inputs.push_image }}
+      release_tag_latest: ${{ github.event_name == 'release' && 'true' || github.event.inputs.release_tag_latest }}
+      push_image: ${{ github.event_name == 'release' && 'true' || github.event.inputs.push_image }}

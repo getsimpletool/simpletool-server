@@ -11,6 +11,7 @@ ARG GID=100
 USER root
 ### Envrionment config
 ENV APT_INSTALL=
+ENV APPUSER_PASSWORD=
 ENV DISPLAY=:1 \
     VNC_ENABLED=true \
     VNC_PORT=5901 \
@@ -28,9 +29,7 @@ ENV DISPLAY=:1 \
     APP_FOLDER=/app \
     NODE_VERSION=v23.6.0 \  
     SSHD_ENABLED=true \
-    SSHD_PORT=22 \
-    APPUSER_PASSWORD=ApPuser4password
-
+    SSHD_PORT=22
 
 WORKDIR /tmp
 
@@ -73,7 +72,7 @@ RUN useradd -m -s /bin/bash -N -u $UID -g $GID $USER \
     && echo "${USER} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers \
     && chmod 0440 /etc/sudoers \
     && chmod g+w /etc/passwd \
-    && echo "${USER}:${APPUSER_PASSWORD}" | chpasswd \
+    && echo "${USER}:ApPuser4password" | chpasswd \
     && mkdir -p $APP_FOLDER \
     && mkdir -p $STARTUPDIR \
     && chown -R $USER:$GID $APP_FOLDER \

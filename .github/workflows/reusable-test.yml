@@ -6,7 +6,7 @@
 #     test:
 #       uses: ./.github/workflows/reusable/reusable-test.yml
 
-name: test
+name: reusable-test
 on:
   workflow_call:
 

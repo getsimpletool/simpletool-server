@@ -13,7 +13,7 @@
 #         release_tag_latest: true
 #         push_image: true
 
-name: build-docker
+name: reusable-build-docker
 on:
   workflow_call:
     inputs:
@@ -68,6 +68,8 @@ jobs:
           tags: ${{ steps.docker_tags.outputs.all_tags }}
           build-args: |
             APP_VERSION=${{ inputs.release_tag }}
+          cache-from: type=registry,ref=${{ github.repository_owner }}/simpletool-server:buildcache
+          cache-to: type=registry,ref=${{ github.repository_owner }}/simpletool-server:buildcache,mode=max
 
       - name: Image built
         run: echo "Docker image build completed for"

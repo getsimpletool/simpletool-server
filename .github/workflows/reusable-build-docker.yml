@@ -28,6 +28,10 @@ on:
         type: boolean
         default: false
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

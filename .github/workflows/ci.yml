@@ -6,4 +6,8 @@ on:
 
 jobs:
   test:
+<<<<<<< HEAD
     uses: ./.github/workflows/reusable/reusable-test.yml
+=======
+    uses: ./.github/workflows/reusable-test.yml
+>>>>>>> d0488d8 (v0.1.2)

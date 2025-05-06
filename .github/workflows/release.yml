@@ -19,15 +19,14 @@ on:
         type: boolean
         default: true
 
-permissions:
-  contents: read
-  packages: write
 
 jobs:
   test:
     uses: ./.github/workflows/reusable-test.yml
-
   build-docker:
+    permissions:
+      contents: read
+      packages: write
     needs: test
     if: ${{ needs.test.result == 'success' }}
     uses: ./.github/workflows/reusable-build-docker.yml

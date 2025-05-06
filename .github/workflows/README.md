@@ -10,8 +10,9 @@ This directory contains all CI/CD workflows for the SimpleToolServer project.
 ## Reusable Subflows
 
 <<<<<<< HEAD
-Reusable workflows are stored in the `reusable/` subfolder and are intended to be used as building blocks by main workflows.
+Reusable workflows are stored alongside the main workflow files in `.github/workflows/` and are intended to be used as building blocks by main workflows
 =======
+
 Reusable workflows are stored alongside the main workflow files in `.github/workflows/` and are intended to be used as building blocks by main workflows.
 >>>>>>> d0488d8 (v0.1.2)
 
@@ -28,17 +29,14 @@ Reusable workflows are stored alongside the main workflow files in `.github/work
 ```yaml
 jobs:
   test:
-<<<<<<< HEAD
-    uses: ./.github/workflows/reusable/reusable-test.yml
-=======
     uses: ./.github/workflows/reusable-test.yml
->>>>>>> d0488d8 (v0.1.2)
+
 
   build-docker:
     needs: test
     if: ${{ needs.test.result == 'success' }}
 <<<<<<< HEAD
-    uses: ./.github/workflows/reusable/reusable-build-docker.yml
+    uses: ./.github/workflows/reusable-build-docker.yml
 =======
     uses: ./.github/workflows/reusable-build-docker.yml
 >>>>>>> d0488d8 (v0.1.2)
@@ -50,11 +48,6 @@ jobs:
 
 ## Conventions
 
-<<<<<<< HEAD
-- All reusable workflows are prefixed with `reusable-` and live in `.github/workflows/reusable/`.
-=======
-- All reusable workflows are prefixed with `reusable-` and live in `.github/workflows/`.
->>>>>>> d0488d8 (v0.1.2)
 - Main workflows are in the root of `.github/workflows/`.
 - Each reusable workflow has a header comment describing its purpose, inputs, and usage.
 

@@ -21,20 +21,12 @@ on:
 
 jobs:
   test:
-<<<<<<< HEAD
-    uses: ./.github/workflows/reusable/reusable-test.yml
-=======
     uses: ./.github/workflows/reusable-test.yml
->>>>>>> d0488d8 (v0.1.2)
 
   build-docker:
     needs: test
     if: ${{ needs.test.result == 'success' }}
-<<<<<<< HEAD
-    uses: ./.github/workflows/reusable/reusable-build-docker.yml
-=======
     uses: ./.github/workflows/reusable-build-docker.yml
->>>>>>> d0488d8 (v0.1.2)
     with:
       release_tag: ${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}
       release_tag_latest: ${{ github.event_name == 'release' && true || github.event.inputs.release_tag_latest }}

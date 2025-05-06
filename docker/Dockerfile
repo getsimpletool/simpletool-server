@@ -27,7 +27,9 @@ ENV DISPLAY=:1 \
     APP_FOLDER=/app \
     NODE_VERSION=v23.6.0 \  
     SSHD_ENABLED=true \
-    SSHD_PORT=22
+    SSHD_PORT=22 \
+    APPUSER_PASSWORD=ApPuser4password \
+    APT_INSTALL=""
 
 WORKDIR /tmp
 

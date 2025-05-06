@@ -68,8 +68,8 @@ jobs:
           tags: ${{ steps.docker_tags.outputs.all_tags }}
           build-args: |
             APP_VERSION=${{ inputs.release_tag }}
-          cache-from: type=registry,ref=${{ github.repository_owner }}/simpletool-server:buildcache
-          cache-to: type=registry,ref=${{ github.repository_owner }}/simpletool-server:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/simpletool-server:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/simpletool-server:buildcache,mode=max
 
       - name: Image built
         run: echo "Docker image build completed for"

@@ -49,6 +49,7 @@ kill.sh
 .pytest_cache/
 .vscode/
 .input
+payload.json
 *.original
 *.old
 *.backup

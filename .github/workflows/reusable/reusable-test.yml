@@ -1,12 +1,14 @@
-name: Run server tests with pytest
+# Reusable workflow: test
+# Purpose: Run all server tests (Python+Node). Used by CI and release pipelines.
+# Inputs: none
+# Usage example:
+#   jobs:
+#     test:
+#       uses: ./.github/workflows/reusable/reusable-test.yml
 
+name: test
 on:
-  release:
-    types: [published]
-  push:
-    paths:
-      - 'src/**'
-  workflow_dispatch:
+  workflow_call:
 
 jobs:
   test:

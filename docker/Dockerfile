@@ -1,8 +1,8 @@
 FROM debian:trixie
 
 LABEL MAINTAINER="Artur Zdolinski artur@zdolinski.com"
-ENV VERSION=2025-04-26
 ARG TZ=Etc/UTC
+ARG APP_VERSION=0.0.0
 ARG USER=appuser
 ARG UID=1000
 ARG GID=100
@@ -136,9 +136,10 @@ RUN PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install uvx && \
 
 # Switch to user
 USER appuser
+ENV PATH="/home/appuser/.local/bin:${PATH}" \
+    APP_VERSION=${APP_VERSION}
 ADD --chown=$USER:$GID ./docker/src/home/ $HOME/
 ADD ./docker/src/startup/ $STARTUPDIR
-ENV PATH="/home/appuser/.local/bin:${PATH}"
 RUN mkdir -p /app/server \
     && chmod +x $HOME/wm_startup.sh \
     && touch $HOME/.bashrc 

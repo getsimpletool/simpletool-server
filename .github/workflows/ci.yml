@@ -1,0 +1,9 @@
+name: CI
+on:
+  push:
+    paths:
+      - 'src/**'
+
+jobs:
+  test:
+    uses: ./.github/workflows/reusable/reusable-test.yml

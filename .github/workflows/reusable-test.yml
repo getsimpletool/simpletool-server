@@ -35,7 +35,7 @@ jobs:
           pip install --upgrade pip
           pip install setuptools
           pip install -r src/mcpo_simple_server/requirements.txt
-          pip install -r test/mcpo_simple_server/requirements-pytest.txt
+          pip install -r test/server/requirements-pytest.txt
 
       - name: Install uv (Python package manager)
         run: |
@@ -43,5 +43,5 @@ jobs:
           uv --version
 
       - name: Run pytest with --clean
-        working-directory: ./test/mcpo_simple_server
+        working-directory: ./test/server
         run: pytest --clean

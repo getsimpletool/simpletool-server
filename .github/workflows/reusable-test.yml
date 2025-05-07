@@ -4,7 +4,7 @@
 # Usage example:
 #   jobs:
 #     test:
-#       uses: ./.github/workflows/reusable/reusable-test.yml
+#       uses: ./.github/workflows/reusable-test.yml
 
 name: reusable-test
 on:
@@ -36,10 +36,6 @@ jobs:
           pip install setuptools
           pip install -r src/mcpo_simple_server/requirements.txt
           pip install -r test/server/requirements-pytest.txt
-
-      - name: Install uv (Python package manager)
-        run: |
-          pip install uv
           uv --version
 
       - name: Run pytest with --clean

@@ -12,14 +12,21 @@ from pathlib import Path
 # Paths for clean server copy
 # Copy from project root src/server
 SRC = Path(__file__).parent.parent.parent / 'src' / 'mcpo_simple_server'
-DST = Path('/tmp/server')
+DST = Path('/tmp/testing/mcpo_simple_server')
 CLEAN_URL = 'http://localhost:9999'
+
+# Check if DST exist
+if not DST.exists():
+    DST.mkdir(parents=True, exist_ok=True)
+
+os.environ['PYTHONPATH'] = f"{os.environ.get('PYTHONPATH', '')}:/app"
+os.environ['PYTHONPATH'] = f"{os.environ.get('PYTHONPATH', '')}:{DST.parent}"
 
 
 def pytest_addoption(parser):
     parser.addoption(
         '--clean', action='store_true',
-        help='Start a clean server instance in /tmp/server on port 9999'
+        help=f'Start a clean server instance in {DST} on port 9999'
     )
 
 
@@ -40,7 +47,6 @@ def server_url(request):
         # remove also .env file
         (DST / '.env').unlink(missing_ok=True)
         # start uvicorn
-        os.environ['PYTHONPATH'] = f"{os.environ.get('PYTHONPATH', '')}:/tmp"
         proc = subprocess.Popen([
             sys.executable, '-m', 'uvicorn', 'main:fastapi',
             '--host', '0.0.0.0', '--port', '9999'

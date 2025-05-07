@@ -7,7 +7,7 @@
 # Usage example:
 #   jobs:
 #     build-docker:
-#       uses: ./.github/workflows/reusable/reusable-build-docker.yml
+#       uses: ./.github/workflows/reusable-build-docker.yml
 #       with:
 #         release_tag: ${{ github.event.release.tag_name }}
 #         release_tag_latest: true

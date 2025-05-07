@@ -1,10 +1,10 @@
-# Simple Tool Server
+# MCPOSimpleServer
 
-[Docs](https://docs.simpletool.org)
+A Python-based LLM server that implements the Model Context Protocol (MCP).
 
-## 🤔 What is SimpleTool Server?
+## 🤔 What is MCPOSimpleServer?
 
-SimpleTool Server is a lightweight, asynchronous API platform for running and managing MCP tools in isolated, secure Docker container.
+MCPOSimpleServer is a lightweight, asynchronous API platform for running and managing MCP tools in isolated, secure environments. It implements the Model Context Protocol (MCP) for seamless integration with LLM applications.
 
 ## 📺 Demo
 

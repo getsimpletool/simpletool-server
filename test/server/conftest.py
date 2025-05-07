@@ -11,7 +11,7 @@ from pathlib import Path
 
 # Paths for clean server copy
 # Copy from project root src/server
-SRC = Path(__file__).parent.parent.parent / 'src' / 'server'
+SRC = Path(__file__).parent.parent.parent / 'src' / 'mcpo_simple_server'
 DST = Path('/tmp/server')
 CLEAN_URL = 'http://localhost:9999'
 

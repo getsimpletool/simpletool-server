@@ -1,15 +1,15 @@
 services:
-  simpletoolserver:
-    hostname: simpletoolserver
-    container_name: simpletoolserver
-    image: ghcr.io/getsimpletool/simpletool-server:latest
+  mcpo-simple-server:
+    hostname: mcpo-simple-server
+    container_name: mcpo-simple-server
+    image: ghcr.io/getsimpletool/mcpo-simple-server:latest
     shm_size: '2gb'
     #build:
     #  context: ..
     #  dockerfile: ./docker/Dockerfile
     ports:
       - 2222:22       # SSH port
-      - 8000:8000     # HTTP SimpleTool MCP port
+      - 8000:8000     # API HTTP MCPoSimpleServer port
       - 5901:5901     # VNC port
       - 6901:6901     # HTTP noVNC port
     # Set limit CPU core = 2
@@ -21,9 +21,9 @@ services:
       - PGID=100
       - TZ=CET
     env_file:
-      - simpletoolserver.env
+      - mcpo-simple-server.env
     volumes:
-      - data:/app/server/data
+      - data:/app/mcpo_simple_server/data
     restart: unless-stopped
 
 networks:

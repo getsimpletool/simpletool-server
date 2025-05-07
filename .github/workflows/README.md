@@ -9,12 +9,7 @@ This directory contains all CI/CD workflows for the SimpleToolServer project.
 
 ## Reusable Subflows
 
-<<<<<<< HEAD
 Reusable workflows are stored alongside the main workflow files in `.github/workflows/` and are intended to be used as building blocks by main workflows
-=======
-
-Reusable workflows are stored alongside the main workflow files in `.github/workflows/` and are intended to be used as building blocks by main workflows.
->>>>>>> d0488d8 (v0.1.2)
 
 - `reusable-test.yml`: Runs all server tests (Python + Node). No inputs required.
 - `reusable-build-docker.yml`: Builds and optionally pushes the Docker image to GHCR. Requires three inputs:
@@ -35,11 +30,7 @@ jobs:
   build-docker:
     needs: test
     if: ${{ needs.test.result == 'success' }}
-<<<<<<< HEAD
     uses: ./.github/workflows/reusable-build-docker.yml
-=======
-    uses: ./.github/workflows/reusable-build-docker.yml
->>>>>>> d0488d8 (v0.1.2)
     with:
       release_tag: ${{ github.event.release.tag_name }}
       release_tag_latest: true

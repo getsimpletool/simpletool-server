@@ -117,7 +117,7 @@ RUN apt-get update \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 
-RUN printf '\n# docker-simpletoolserver-desktop-xfce4:\n$localhost = "no";\n1;\n' >>/etc/tigervnc/vncserver-config-defaults \
+RUN printf '\n# mcpo-simple-server-desktop-xfce4:\n$localhost = "no";\n1;\n' >>/etc/tigervnc/vncserver-config-defaults \
     && mkdir -p $NO_VNC_HOME/utils/websockify \
     && wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.6.0.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME \
     && wget -qO- https://github.com/novnc/websockify/archive/refs/tags/v0.13.0.tar.gz | tar xz --strip 1 -C $NO_VNC_HOME/utils/websockify \
@@ -142,17 +142,17 @@ ENV PATH="/home/appuser/.local/bin:${PATH}" \
     APP_VERSION=${APP_VERSION}
 ADD --chown=$USER:$GID ./docker/src/home/ $HOME/
 ADD ./docker/src/startup/ $STARTUPDIR
-RUN mkdir -p /app/server \
+RUN mkdir -p /app/mcpo_simple_server \
     && chmod +x $HOME/wm_startup.sh \
     && touch $HOME/.bashrc 
 
 WORKDIR /home/appuser
 
-### Install SimpleServer
-ADD --chown=$USER:$GID ./src/server /app/server/
-RUN rm -rf /app/server/data/config \
-    && rm -rf /app/server/.env \
-    && sudo pip3 install -r /app/server/requirements.txt
+### Install MCPoSimpleServer
+ADD --chown=$USER:$GID ./src/mcpo_simple_server /app/mcpo_simple_server/
+RUN rm -rf /app/mcpo_simple_server/data/config \
+    && rm -rf /app/mcpo_simple_server/.env \
+    && sudo pip3 install -r /app/mcpo_simple_server/requirements.txt
 
 # Use supervisord to manage both VNC and Uvicorn
 COPY ./docker/src/supervisor/conf.d/* /etc/supervisor/conf.d/

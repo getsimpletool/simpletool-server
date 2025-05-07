@@ -1,0 +1,10 @@
+include mcpo_simple_server/requirements.txt
+include pyproject.toml
+include setup.py
+
+recursive-include mcpo_simple_server *.py
+recursive-include mcpo_simple_server *.sh
+
+# Exclude data directory and .env file
+prune mcpo_simple_server/data
+exclude mcpo_simple_server/.env

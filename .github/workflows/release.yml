@@ -20,15 +20,15 @@ on:
         default: true
 
 jobs:
-  test:
-    uses: ./.github/workflows/reusable-test.yml
+  pytest:
+    uses: ./.github/workflows/reusable-pytest.yml
 
   build-docker:
-    needs: test
+    needs: pytest
     permissions:
       contents: read
       packages: write
-    if: ${{ needs.test.result == 'success' }}
+    if: ${{ needs.pytest.result == 'success' }}
     uses: ./.github/workflows/reusable-build-docker.yml
     with:
       release_tag: ${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.release_tag }}

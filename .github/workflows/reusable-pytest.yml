@@ -1,17 +1,17 @@
-# Reusable workflow: test
-# Purpose: Run all server tests (Python+Node). Used by CI and release pipelines.
+# Reusable workflow: pytest
+# Purpose: Run all server pytest (Python+Node). Used by CI and release pipelines.
 # Inputs: none
 # Usage example:
 #   jobs:
-#     test:
+#     pytest:
 #       uses: ./.github/workflows/reusable-test.yml
 
-name: reusable-test
+name: reusable-pytest
 on:
   workflow_call:
 
 jobs:
-  test:
+  pytest:
     runs-on: ubuntu-latest
     defaults:
       run:

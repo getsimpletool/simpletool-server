@@ -6,5 +6,5 @@ on:
       - 'src/**'
 
 jobs:
-  test:
-    uses: ./.github/workflows/reusable-test.yml
+  pytest:
+    uses: ./.github/workflows/reusable-pytest.yml

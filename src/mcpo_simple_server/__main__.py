@@ -6,8 +6,7 @@ This allows running the server with `python -m mcpo_simple_server`
 import sys
 import argparse
 import uvicorn
-from loguru import logger
-from mcpo_simple_server.main import fastapi
+from mcpo_simple_server.logger import logger
 
 
 def parse_args():

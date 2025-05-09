@@ -5,7 +5,7 @@ import os
 
 
 @pytest.mark.asyncio
-async def test_108_delete_api_key(server_url, auth_token):
+async def test_108_admin_delete_api_key(server_url, admin_auth_token):
     """
     Test deleting an API key for the current user (admin).
     """
@@ -14,7 +14,7 @@ async def test_108_delete_api_key(server_url, auth_token):
         api_key = f.read().strip()
 
     async with httpx.AsyncClient() as client:
-        headers = {"Authorization": f"Bearer {auth_token}", "Content-Type": "application/json"}
+        headers = {"Authorization": f"Bearer {admin_auth_token}", "Content-Type": "application/json"}
         resp = await client.request(
             "DELETE",
             f"{server_url}/user/api-keys",

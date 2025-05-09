@@ -34,8 +34,12 @@ class McpServerPrivateService:
             Dictionary of environment variables or None if not defined
         """
         # Get user configuration
-        user_config = self.config_service.users.get_user(username)
-        if not user_config:
+        try:
+            user_config = await self.config_service.users.get_user(username)
+            if not user_config:
+                return None
+        except Exception as e:
+            logger.error(f"Failed to get user configuration for '{username}': {str(e)}")
             return None
 
         # Check if user has server-specific environment variables
@@ -107,10 +111,23 @@ class McpServerPrivateService:
         """
         logger.info(f"Starting private server for user {username} based on {server_name}")
 
-        # Check if base server exists
-        if server_name not in self.mcpservers:
-            logger.warning(f"Base server '{server_name}' not found")
-            return {"status": "error", "message": f"Base server '{server_name}' not found"}
+        # Check if we need to get server config from user configuration
+        config_service = self.parent.config_service
+        user_data = None
+        user_server_config = None
+
+        # Try to get user configuration for this server
+        try:
+            user_data = await config_service.users.get_user(username)
+            if user_data and "mcpServers" in user_data and server_name in user_data["mcpServers"]:
+                user_server_config = user_data["mcpServers"][server_name]
+        except Exception as e:
+            logger.warning(f"Failed to get user configuration for '{username}': {str(e)}")
+
+        # If server doesn't exist in public servers and we don't have user config, return error
+        if server_name not in self.mcpservers and not user_server_config:
+            logger.warning(f"Server '{server_name}' not found in public servers or user configuration")
+            return {"status": "error", "message": f"Server '{server_name}' not found in public servers or user configuration"}
 
         # Generate private server name
         private_server_name = await self.get_private_server_name(username, server_name)
@@ -121,12 +138,41 @@ class McpServerPrivateService:
             return {"status": "success", "message": f"Private server '{private_server_name}' already exists"}
 
         try:
-            # Get base server configuration
-            base_server = self.mcpservers[server_name]
-            command = base_server["command"]
-            args = base_server["args"]
-            env = base_server.get("env", {}).copy() if base_server.get("env") else {}
-            description = f"Private {base_server.get('description', server_name)} for {username}"
+            # Determine if we're using a base server or user configuration
+            if server_name in self.mcpservers:
+                # Get base server configuration
+                base_server = self.mcpservers[server_name]
+                command = base_server["command"]
+                args = base_server["args"]
+                env = base_server.get("env", {}).copy() if base_server.get("env") else {}
+                description = f"Private {base_server.get('description', server_name)} for {username}"
+            else:
+                # Use user's server configuration (we know it's not None at this point)
+                # because we checked earlier with: if server_name not in self.mcpservers and not user_server_config
+                if isinstance(user_server_config, dict):
+                    command = user_server_config.get("command", "")
+                    args = user_server_config.get("args", [])
+                    
+                    # Default to 'uvx' if command is empty but we have args
+                    if not command and args and len(args) > 0:
+                        command = "uvx"
+                        
+                    # Ensure command is not empty
+                    if not command:
+                        logger.error(f"Command is empty for server '{server_name}' for user '{username}'")
+                        return {"status": "error", "message": f"Command is empty for server '{server_name}'"}
+                    
+                    env = {}
+                    if "env" in user_server_config and user_server_config["env"]:
+                        env = user_server_config["env"].copy()
+                    description = user_server_config.get("description", "") or f"Private {server_name} for {username}"
+                else:
+                    logger.error(f"Invalid server configuration for '{server_name}' for user '{username}'")
+                    return {"status": "error", "message": f"Invalid server configuration for '{server_name}'"}
+                    
+                # Log the command and args for debugging
+                logger.info(f"Using command '{command}' with args {args} for private server '{server_name}' for user '{username}'")
+
 
             # Get user-specific environment variables
             user_env = await self.get_user_env_for_server(username, server_name)
@@ -135,7 +181,7 @@ class McpServerPrivateService:
                 env.update(user_env)
 
             # Start the private server
-            start_result = await self.parent.add_server(private_server_name, command, args, env, description)
+            start_result = await self.parent.add_mcpserver(private_server_name, command, args, env, description)
 
             if start_result["status"] != "success":
                 return start_result

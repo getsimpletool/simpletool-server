@@ -107,18 +107,13 @@ class ToolsRouter:
 
             param_fields[prop_name] = (field_type, field_info)
 
-        # If no parameters defined in schema, use a generic Dict
-        if not param_fields:
-            param_model = Dict[str, Any]
-        else:
-            # Create a dynamic model with the fields
-            # Create model name by capitalizing each word and removing spaces
-            model_name = "".join(word.capitalize() for word in tool_name.split("_"))
-            # Ensure "Input" suffix
-            model_name = f"{model_name}Input"
-            param_model = create_model(model_name, **param_fields)
+        # Create the dynamic model
+        param_model = create_model(
+            f"{tool_name.capitalize()}Params",
+            **param_fields
+        )
 
-        # Define the endpoint function
+        # Create the endpoint function
         async def tool_endpoint(
             params: param_model = Body(..., description=f"Parameters for {tool_name}"),     # type: ignore
             username: Optional[str] = Depends(dependencies.get_username),  # only API key allowed or guest

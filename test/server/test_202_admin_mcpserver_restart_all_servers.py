@@ -5,24 +5,24 @@ import asyncio
 
 
 @pytest.mark.asyncio
-async def test_202_admin_mcpserver_restart_all_servers(server_url, auth_token):
+async def test_202_admin_mcpserver_restart_all_servers(server_url, admin_auth_token):
     """
     Test restarting all MCP servers:
     1. Verify servers exist (created in previous tests)
     2. Use a tool from the time server to verify it works
-    3. Restart all servers via POST /admin/mcpservers/restart
+    3. Restart all servers via POST /public/mcpservers/restart
     4. Verify the time server is still operational after restart
     """
-    headers = {"Authorization": f"Bearer {auth_token}", "Content-Type": "application/json"}
+    headers = {"Authorization": f"Bearer {admin_auth_token}", "Content-Type": "application/json"}
 
     async with httpx.AsyncClient() as client:
         # 1. Verify servers exist from previous tests
-        resp = await client.get(f"{server_url}/admin/mcpservers", headers=headers)
+        resp = await client.get(f"{server_url}/public/mcpservers", headers=headers)
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
 
         data = resp.json()
         assert "mcpservers" in data, f"Expected 'mcpservers' key in response, got {data}"
-        
+
         # Make sure we have at least one server
         assert len(data["mcpservers"]) > 0, "No servers found. Previous tests might have failed."
 
@@ -37,17 +37,17 @@ async def test_202_admin_mcpserver_restart_all_servers(server_url, auth_token):
 
         # 3. Restart all servers
         resp = await client.post(
-            f"{server_url}/admin/mcpservers/restart",
+            f"{server_url}/public/mcpservers/restart",
             headers=headers
         )
 
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
         data = resp.json()
         assert data.get("status") == "success", f"Expected 'success', got {data.get('status')}: {data}"
-        
+
         # The response should contain information about restarted servers
         assert "servers" in data, f"Expected 'servers' key in response, got {data}"
-        
+
         # Wait for servers to restart
         await asyncio.sleep(3)
 

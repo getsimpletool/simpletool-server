@@ -7,6 +7,8 @@ services:
     #build:
     #  context: ..
     #  dockerfile: ./docker/Dockerfile
+    #  args:
+    #    - APP_VERSION=${APP_VERSION:-0.0.0}
     ports:
       - 2222:22       # SSH port
       - 8000:8000     # API HTTP MCPoSimpleServer port
@@ -28,12 +30,12 @@ services:
 
 networks:
   default:
-    name: simpletool
+    name: mcpo-simple-server
 
 # Create volume for data
 volumes:
   data:
-    name: simpletool-server-data
+    name: mcpo-simple-server-data
     driver_opts:
       type: none
       o: bind

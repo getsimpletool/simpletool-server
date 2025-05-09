@@ -40,4 +40,4 @@ jobs:
 
       - name: Run pytest with --clean
         working-directory: ./test/server
-        run: pytest --clean
+        run: bash run.sh a --clean

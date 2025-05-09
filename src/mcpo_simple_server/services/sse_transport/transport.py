@@ -9,7 +9,7 @@ import asyncio
 import json
 import uuid
 from typing import Dict, Any, Optional, AsyncGenerator, Set
-from loguru import logger
+from mcpo_simple_server.logger import logger
 
 
 class SseTransport:
@@ -98,28 +98,33 @@ class SseTransport:
                         )
 
                         # Format the message as an SSE event according to the specification
-                        # The message must be serialized to JSON and sent as the 'data' field
-                        message_data = json.dumps(message)
-                        logger.debug(f"Sending message to client {session_id}: {message_data}")
+                        # Convert the message to a JSON string for the data field
+                        message_json = json.dumps(message)
 
+                        # Yield the formatted SSE event
                         yield {
                             "event": "message",
-                            "data": message_data
+                            "data": message_json
                         }
 
-                    except asyncio.TimeoutError:
-                        # Check if we're shutting down before sending keep-alive
-                        if self.shutting_down:
-                            logger.debug(f"Shutdown in progress, closing connection for client {session_id}")
-                            break
+                        logger.debug(f"Sent message to client {session_id}: {message_json[:100]}...")
 
-                        # Send a keep-alive comment to prevent connection timeout
-                        yield {"comment": "keep-alive"}
+                    except asyncio.TimeoutError:
+                        # No message received within the timeout period
+                        # This allows us to check if the connection should still be active
+                        continue
+                    except Exception as e:
+                        logger.error(f"Error processing message for client {session_id}: {str(e)}")
+                        # Continue processing other messages
+                        continue
+
             except asyncio.CancelledError:
-                logger.info(f"SSE connection task cancelled for client {session_id}")
-                raise
+                logger.info(f"SSE connection for client {session_id} cancelled")
             except Exception as e:
                 logger.error(f"Error in SSE connection for client {session_id}: {str(e)}")
+            finally:
+                # Clean up resources for this client
+                logger.info(f"SSE connection for client {session_id} closed")
 
     async def send_message(self, session_id: str, message: Dict[str, Any]) -> bool:
         """
@@ -132,94 +137,57 @@ class SseTransport:
         Returns:
             True if the message was sent successfully, False otherwise
         """
-        # Check if shutdown is in progress
-        if self.shutting_down:
-            logger.warning("Server is shutting down, not sending message")
+        # Check if the session exists
+        if session_id not in self.message_queues:
+            logger.warning(f"Attempted to send message to non-existent session: {session_id}")
             return False
 
-        # Normalize session_id to ensure it's in the correct format
-        try:
-            normalized_session_id = str(uuid.UUID(session_id))
-        except ValueError:
-            logger.warning(f"Invalid session ID format: {session_id}")
-            return False
-
-        if normalized_session_id not in self.message_queues:
-            logger.warning(f"Cannot send message to unknown client: {normalized_session_id}")
+        # Check if the connection is still active
+        if not self.active_connections.get(session_id, False):
+            logger.warning(f"Attempted to send message to inactive session: {session_id}")
             return False
 
         try:
-            # Add message to the client's queue
-            await self.message_queues[normalized_session_id].put(message)
-            logger.debug(f"Message queued for client {normalized_session_id}: {json.dumps(message)}")
+            # Put the message in the queue for the client
+            await self.message_queues[session_id].put(message)
+            logger.debug(f"Queued message for client {session_id}")
             return True
         except Exception as e:
-            logger.error(f"Error sending message to client {normalized_session_id}: {str(e)}")
+            logger.error(f"Error sending message to client {session_id}: {str(e)}")
             return False
 
-    async def shutdown(self) -> None:
+    async def shutdown(self):
         """
         Forcefully shut down all active SSE connections.
 
         This method should be called when the server is shutting down to ensure
         all clients are properly disconnected.
         """
-        logger.info("Forcefully shutting down SSE transport...")
+        logger.info("Initiating SSE transport shutdown")
 
-        # Mark as shutting down to prevent new connections and messages
+        # Set the shutting down flag to prevent new connections
         self.shutting_down = True
 
-        # Close all active connections
-        active_sessions = [
-            session_id for session_id, active in self.active_connections.items()
-            if active
-        ]
+        # Wait a moment for connections to notice the shutdown flag
+        await asyncio.sleep(0.5)
 
-        if active_sessions:
-            logger.warning(f"Force terminating {len(active_sessions)} active SSE connections: {active_sessions}")
-
-            # Immediately mark all connections as inactive
-            for session_id in active_sessions:
-                self.active_connections[session_id] = False
-                logger.debug(f"Marked connection {session_id} as inactive")
-        else:
-            logger.info("No active SSE connections to terminate")
-
-        # Cancel all connection tasks to force immediate disconnection
-        tasks_to_cancel = list(self.connection_tasks)
-        if tasks_to_cancel:
-            logger.warning(f"Cancelling {len(tasks_to_cancel)} connection tasks")
-
-            for task in tasks_to_cancel:
-                if not task.done() and not task.cancelled():
-                    try:
+        # Cancel all active connection tasks
+        if self.connection_tasks:
+            logger.info(f"Cancelling {len(self.connection_tasks)} active SSE connection tasks")
+            for task in list(self.connection_tasks):
+                try:
+                    if not task.done():
                         task.cancel()
-                        logger.debug(f"Cancelled connection task: {task}")
-                    except Exception as e:
-                        logger.error(f"Error cancelling task {task}: {str(e)}")
+                except Exception as e:
+                    logger.error(f"Error cancelling connection task: {str(e)}")
 
-            # Wait for all tasks to be cancelled with a short timeout
-            try:
-                # Use asyncio.wait with return_exceptions=True to handle cancellation
-                _, pending = await asyncio.wait(
-                    tasks_to_cancel,
-                    timeout=0.5,
-                    return_when=asyncio.ALL_COMPLETED
-                )
-
-                if pending:
-                    logger.warning(f"{len(pending)} tasks still pending after cancellation timeout")
-
-                    # Attempt to cancel again more aggressively
-                    for task in pending:
-                        if not task.done() and not task.cancelled():
-                            try:
-                                task.cancel()
-                                logger.debug(f"Forcefully cancelled pending task: {task}")
-                            except Exception as e:
-                                logger.error(f"Error in aggressive task cancellation: {str(e)}")
-            except Exception as e:
-                logger.error(f"Error waiting for tasks to cancel: {str(e)}")
+            # Wait for all tasks to be cancelled
+            if self.connection_tasks:
+                try:
+                    # Wait for a short time for tasks to be cancelled
+                    await asyncio.sleep(1)
+                except Exception as e:
+                    logger.error(f"Error waiting for tasks to cancel: {str(e)}")
         else:
             logger.info("No SSE connection tasks to cancel")
 

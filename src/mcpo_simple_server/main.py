@@ -5,8 +5,8 @@ import sys
 from typing import Any
 from mcpo_simple_server.logger import logger
 from mcpo_simple_server.config import CONFIG_MAIN_FILE_PATH, APP_VERSION, APP_NAME
-import mcpo_simple_server.routers.prompts as prompts_module
 import mcpo_simple_server.routers.admin as admin_module
+import mcpo_simple_server.routers.public as public_module
 import mcpo_simple_server.routers.mcp_sse as mcp_sse_module
 import mcpo_simple_server.routers.tools as tools_module
 import mcpo_simple_server.routers.user as user_module
@@ -42,9 +42,9 @@ auth_dependencies.set_config_service(config_service)
 
 # Include routers
 fastapi.include_router(user_module.router)
-fastapi.include_router(mcp_sse_module.router)  # Include the SSE transport router
-fastapi.include_router(prompts_module.router)
+fastapi.include_router(public_module.router)
 fastapi.include_router(admin_module.router)
+fastapi.include_router(mcp_sse_module.router)  # Include the SSE transport router
 
 
 def custom_openapi():

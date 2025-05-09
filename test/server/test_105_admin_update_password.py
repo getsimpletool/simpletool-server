@@ -4,10 +4,10 @@ import asyncio
 
 
 @pytest.mark.asyncio
-async def test_105_update_password(server_url, auth_token):
+async def test_105_admin_update_password(server_url, admin_auth_token):
     # Change password from admin to admin123
     async with httpx.AsyncClient() as client:
-        headers = {"Authorization": f"Bearer {auth_token}"}
+        headers = {"Authorization": f"Bearer {admin_auth_token}"}
         resp = await client.put(
             f"{server_url}/user/password",
             headers=headers,

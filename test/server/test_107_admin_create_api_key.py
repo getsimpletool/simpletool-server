@@ -3,12 +3,12 @@ import httpx
 
 
 @pytest.mark.asyncio
-async def test_107_create_api_key(server_url, auth_token):
+async def test_107_admin_create_api_key(server_url, admin_auth_token):
     """
     Test creating an API key for the current user (admin).
     """
     async with httpx.AsyncClient() as client:
-        headers = {"Authorization": f"Bearer {auth_token}"}
+        headers = {"Authorization": f"Bearer {admin_auth_token}"}
         resp = await client.post(f"{server_url}/user/api-keys", headers=headers)
         assert resp.status_code == 200, f"API key creation failed: {resp.text}"
         api_key = resp.json().get("api_key")

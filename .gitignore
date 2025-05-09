@@ -45,17 +45,21 @@ docker/data/
 docker_dev/
 specification/
 .windsurfrules
+.windsurf/
 kill.sh
 .pytest_cache/
 .vscode/
 .input
 payload.json
+.tmp/
 *.original
 *.old
 *.backup
 *.backups
 .*/                 # ignore all dot-directories
 !.github/           # but do NOT ignore .github directory
+
+
 
 # Tests
 test/server-stress-tests/
@@ -64,3 +68,4 @@ test/mcpServer-compatibility/
 
 # Src
 src/webui/
+src/__*

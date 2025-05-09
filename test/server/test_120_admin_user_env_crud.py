@@ -1,8 +1,9 @@
 import pytest
 import httpx
 
+
 @pytest.mark.asyncio
-async def test_120_user_env_crud(server_url, auth_token):
+async def test_120_admin_user_env_crud(server_url, admin_auth_token):
     """
     Test full CRUD cycle for user environment variables:
     - PUT /user/env (set env)
@@ -12,7 +13,7 @@ async def test_120_user_env_crud(server_url, auth_token):
     - DELETE /user/env (delete all env)
     """
     async with httpx.AsyncClient() as client:
-        headers = {"Authorization": f"Bearer {auth_token}"}
+        headers = {"Authorization": f"Bearer {admin_auth_token}"}
 
         # 1. PUT /user/env - set initial env
         env_data = {"env": {"FOO": "bar", "BAZ": "qux"}}

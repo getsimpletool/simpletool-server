@@ -4,7 +4,7 @@ import json
 
 
 @pytest.mark.asyncio
-async def test_250_admin_user_lifecycle(server_url, auth_token):
+async def test_250_admin_user_lifecycle(server_url, admin_auth_token):
     """
     Test the full user lifecycle:
     1. Create a new user as admin
@@ -14,7 +14,7 @@ async def test_250_admin_user_lifecycle(server_url, auth_token):
     5. Login with the new password
     6. Delete the user as admin
     """
-    admin_headers = {"Authorization": f"Bearer {auth_token}", "Content-Type": "application/json"}
+    admin_headers = {"Authorization": f"Bearer {admin_auth_token}", "Content-Type": "application/json"}
     
     # Test user credentials
     test_username = "testuser"

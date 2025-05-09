@@ -5,7 +5,7 @@ import asyncio
 
 
 @pytest.mark.asyncio
-async def test_200_admin_mcpserver_lifecycle(server_url, auth_token):
+async def test_200_admin_mcpserver_lifecycle(server_url, admin_auth_token):
     """
     Test the full lifecycle of a MCP server:
     1. Create a new server via POST /admin/mcpserver
@@ -28,12 +28,12 @@ async def test_200_admin_mcpserver_lifecycle(server_url, auth_token):
         }
     }
 
-    headers = {"Authorization": f"Bearer {auth_token}", "Content-Type": "application/json"}
+    headers = {"Authorization": f"Bearer {admin_auth_token}", "Content-Type": "application/json"}
 
     async with httpx.AsyncClient() as client:
         # Add the server
         resp = await client.post(
-            f"{server_url}/admin/mcpserver",
+            f"{server_url}/public/mcpserver",
             headers=headers,
             content=json.dumps(time_server_config)
         )
@@ -43,7 +43,7 @@ async def test_200_admin_mcpserver_lifecycle(server_url, auth_token):
         assert data.get("status") == "success", f"Expected 'success', got {data.get('status')}: {data}"
 
         # 2. Verify server appears in the list
-        resp = await client.get(f"{server_url}/admin/mcpservers", headers=headers)
+        resp = await client.get(f"{server_url}/public/mcpservers", headers=headers)
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
 
         data = resp.json()

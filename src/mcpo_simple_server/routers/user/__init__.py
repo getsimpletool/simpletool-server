@@ -25,5 +25,5 @@ ADMIN_DEFAULT_PASSWORD = os.getenv("ADMIN_DEFAULT_PASSWORD", "admin")
 from . import auth_handlers  # noqa: F401, E402
 from . import api_key_handlers  # noqa: F401, E402
 from . import env_handlers  # noqa: F401, E402
-from . import server_handlers  # noqa: F401, E402
+from . import mcpserver_handlers  # noqa: F401, E402
 from . import prompt_handlers  # noqa: F401, E402

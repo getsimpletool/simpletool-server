@@ -5,19 +5,19 @@ import asyncio
 
 
 @pytest.mark.asyncio
-async def test_201_admin_mcpserver_restart(server_url, auth_token):
+async def test_201_admin_mcpserver_restart(server_url, admin_auth_token):
     """
     Test restarting a specific MCP server:
     1. Verify the 'time' server exists (created in test_200)
     2. Use a tool from the server to verify it works
-    3. Restart the server via POST /admin/mcpserver/{mcpserver_name}/restart
+    3. Restart the server via POST /public/mcpserver/{mcpserver_name}/restart
     4. Verify the server is still operational after restart
     """
-    headers = {"Authorization": f"Bearer {auth_token}", "Content-Type": "application/json"}
+    headers = {"Authorization": f"Bearer {admin_auth_token}", "Content-Type": "application/json"}
 
     async with httpx.AsyncClient() as client:
         # 1. Verify the 'time' server exists from previous test
-        resp = await client.get(f"{server_url}/admin/mcpservers", headers=headers)
+        resp = await client.get(f"{server_url}/public/mcpservers", headers=headers)
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}: {resp.text}"
 
         data = resp.json()
@@ -43,7 +43,7 @@ async def test_201_admin_mcpserver_restart(server_url, auth_token):
 
         # 3. Restart the server
         resp = await client.post(
-            f"{server_url}/admin/mcpserver/time/restart",
+            f"{server_url}/public/mcpserver/time/restart",
             headers=headers
         )
 

@@ -1,8 +1,9 @@
 import pytest
 import httpx
 
+
 @pytest.mark.asyncio
-async def test_100_user_auth_and_me(server_url):
+async def test_100_admin_auth_and_me(server_url):
     # Login with admin credentials
     async with httpx.AsyncClient() as client:
         login_resp = await client.post(

@@ -12,4 +12,8 @@ export PYTHONPATH="$PYTHONPATH:$mcpo_simple_server_path/.."
 # uvicorn main:fastapi --reload --host 0.0.0.0 --port 8000
 
 # Run the server using the __main__ module
-python -m mcpo_simple_server --host 0.0.0.0 --port 8000 --reload
+if [ "$(pwd)" = "/app/mcpo_simple_server" ]; then
+  python3 -m mcpo_simple_server --host 0.0.0.0 --port 8000
+else
+  python3 -m mcpo_simple_server --host 0.0.0.0 --port 8000 --reload
+fi

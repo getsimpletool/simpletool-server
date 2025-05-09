@@ -234,4 +234,5 @@ class McpServersFileConfigService:
         """Ensure cache directory exists and return its path."""
         cache_dir = os.path.join(os.path.dirname(self.parent.config_file_path), "cache")
         os.makedirs(cache_dir, exist_ok=True)
+        logger.info(f"📁 Cache directory created: {cache_dir}")
         return cache_dir

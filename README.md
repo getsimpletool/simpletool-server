@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/getsimpletool-mcpo-simple-server-badge.png)](https://mseep.ai/app/getsimpletool-mcpo-simple-server)
+
 # MCPoSimpleServer
 
 A Python-based LLM server that implements the Model Context Protocol (MCP).
